@@ -2,31 +2,27 @@ package mobile.fhi360.covid_19selfscreeningtool.Api;
 
 import java.util.List;
 
-import mobile.fhi360.covid_19selfscreeningtool.model.Supervisor;
 import mobile.fhi360.covid_19selfscreeningtool.model.UserHealthData;
-import mobile.fhi360.covid_19selfscreeningtool.model.Users;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
 
 public interface Api {
-
-    @FormUrlEncoded
-    @POST("users")
-    Call<Users> createUser(
-            @Field("firstname") String firstname,
-            @Field("lastname") String lastname,
-            @Field("designation") String designation,
-            @Field("email") String email,
-            @Field("password") String password,
-            @Field("userType") String userType,
-            @Field("gender") String gender,
-            @Field("state") String state,
-            @Field("supervisedBy") String supervisedBy);
+//
+//    @FormUrlEncoded
+//    @POST("users")
+//    Call<Users> createUser(
+//            @Field("firstname") String firstname,
+//            @Field("lastname") String lastname,
+//            @Field("designation") String designation,
+//            @Field("email") String email,
+//            @Field("password") String password,
+//            @Field("userType") String userType,
+//            @Field("gender") String gender,
+//            @Field("state") String state,
+//            @Field("supervisedBy") String supervisedBy);
 
     @FormUrlEncoded
     @POST("userHealthData")
@@ -34,8 +30,10 @@ public interface Api {
             @Field("fullname") String fullname,
             @Field("date") String date,
             @Field("age") String age,
+            @Field("gender") String gender,
+            @Field("state") String state,
+            @Field("lga") String lga,
             @Field("phone") String phone,
-            @Field("stateVisited") String stateVisited,
             @Field("feverSymptom") String feverSymptom,
             @Field("coughSymptom") String coughSymptom,
             @Field("difficultyInBreathingSymptom") String difficultyInBreathingSymptom,
@@ -72,62 +70,62 @@ public interface Api {
             @Field("enoughDrugsForThreeMonths") String enoughDrugsForThreeMonths,
             @Field("someoneHelpingYouManageHIV") String someoneHelpingYouManageHIV,
             @Field("covid19CareFromSomeoneInHousehold") String covid19CareFromSomeoneInHousehold,
-            @Field("userId") Long userId,
+//            @Field("userId") Long userId,
             @Field("risk") String risk
     );
 
-    //the users login call
-    @Headers({"Accept: application/json"})
-    @FormUrlEncoded
-    @POST("login")
-    Call<Users> login(
-            @Field("email") String email,
-            @Field("password") String password
-    );
+//    //the users login call
+//    @Headers({"Accept: application/json"})
+//    @FormUrlEncoded
+//    @POST("login")
+//    Call<Users> login(
+//            @Field("email") String email,
+//            @Field("password") String password
+//    );
 
-    //fetching all users
-    @GET("users")
-    Call<List<Users>> getUsers();
+//    //fetching all users
+//    @GET("users")
+//    Call<List<Users>> getUsers();
 
-    //fetching all user health data
-    @GET("userHealthData")
-    Call<List<UserHealthData>> getUserHealthData();
+//    //fetching all user health data
+//    @GET("userHealthData")
+//    Call<List<UserHealthData>> getUserHealthData();
 
     //fetching users by Id
-    @GET("users/{id}")
-    Call<List<Users>> getUsersById(@Path("id") Long id);
+//    @GET("users/{id}")
+//    Call<List<Users>> getUsersById(@Path("id") Long id);
 
     //supervisors Login
-    @FormUrlEncoded
-    @POST("supLogin")
-    Call<Supervisor> supLogin(
-            @Field("email") String email,
-            @Field("password") String password
-    );
+//    @FormUrlEncoded
+//    @POST("supLogin")
+//    Call<Supervisor> supLogin(
+//            @Field("email") String email,
+//            @Field("password") String password
+//    );
 
-    //create supervisor
-    @FormUrlEncoded
-    @POST("supervisor")
-    Call<Supervisor> createSupervisor(
-            @Field("fullname") String fullname,
-            @Field("email") String email,
-            @Field("password") String password,
-            @Field("userType") String userType,
-            @Field("state") String state,
-            @Field("designation") String designation);
+//    //create supervisor
+//    @FormUrlEncoded
+//    @POST("supervisor")
+//    Call<Supervisor> createSupervisor(
+//            @Field("fullname") String fullname,
+//            @Field("email") String email,
+//            @Field("password") String password,
+//            @Field("userType") String userType,
+//            @Field("state") String state,
+//            @Field("designation") String designation);
 
-    //fetching users by supervisor Id
-    @GET("user/{supervisorId}")
-    Call<List<Users>> getUsersBySupervisorId(@Path("supervisorId") String supervisorId);
+//    //fetching users by supervisor Id
+//    @GET("user/{supervisorId}")
+//    Call<List<Users>> getUsersBySupervisorId(@Path("supervisorId") String supervisorId);
 
-    //fetching user health data
-    @GET("userHealthData/{userId}")
-    Call<List<UserHealthData>> getUserHealthByUserId(@Path("userId") Long userId);
+//    //fetching user health data
+//    @GET("userHealthData/{userId}")
+//    Call<List<UserHealthData>> getUserHealthByUserId(@Path("userId") Long userId);
 
     //fetching all supervisors
-    @GET("supervisors")
-    Call<List<Supervisor>> getSupervisors();
-
-    @GET("userHealthdata/{supervisorId}")
-    Call<List<UserHealthData>> getUserHealthDataBySupervisorId(@Path("supervisorId") String supervisorId);
+//    @GET("supervisors")
+//    Call<List<Supervisor>> getSupervisors();
+//
+//    @GET("userHealthdata/{supervisorId}")
+//    Call<List<UserHealthData>> getUserHealthDataBySupervisorId(@Path("supervisorId") String supervisorId);
 }

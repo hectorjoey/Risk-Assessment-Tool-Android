@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 @IgnoreExtraProperties
-public class UserHealthData implements  Serializable {
+public class UserHealthData implements Serializable {
 
     @SerializedName("fullname")
     @Expose
@@ -17,13 +17,25 @@ public class UserHealthData implements  Serializable {
     @Expose
     private String date;
 
+    @SerializedName("gender")
+    @Expose
+    private String gender;
+
+    @SerializedName("age")
+    @Expose
+    private String age;
+
+    @SerializedName("state")
+    @Expose
+    private String state;
+
+    @SerializedName("lga")
+    @Expose
+    private String lga;
+
     @SerializedName("phone")
     @Expose
     private String phone;
-
-    @SerializedName("stateVisited")
-    @Expose
-    private String stateVisited;
 
     @SerializedName("feverSymptom")
     @Expose
@@ -168,28 +180,34 @@ public class UserHealthData implements  Serializable {
     @Expose
     private String covid19CareFromSomeoneInHousehold;
 
-    private Long userId;
+//    private Long userId;
 
     private String risk;
 
-    public UserHealthData() { }
+    public UserHealthData() {
+    }
 
-    public UserHealthData(String fullname, String date, String phone,  String stateVisited, String feverSymptom, String coughSymptom,
+    public UserHealthData(String fullname, String date, String age, String gender, String state, String lga, String phone, String feverSymptom, String coughSymptom,
                           String difficultyInBreathingSymptom, String sneezingSymptoms, String chestPainSymptoms,
                           String diarrhoeaSymptoms, String fluSymptoms, String soreThroatSymptoms, String lossOfSmellSymptoms, String lossOfTasteSymptoms,
                           String contactWithSomeoneWithSymptoms, String contactWithFever, String contactWithCough,
                           String contactWithDifficultBreathing, String contactWithSneeze, String contactWithChestpain,
                           String contactWithDiarrhoea, String contactWithOtherFLu, String contactWithSoreThroat,
-                          String contactWithLossOfSmell,  String contactWithLossOfTaste, String underlyingConditions,
+                          String contactWithLossOfSmell, String contactWithLossOfTaste, String underlyingConditions,
                           String specifyKidney, String specifyPregnancy, String specifyTB, String specifyDiabetes, String specifyLiver,
                           String specifyChronicLungDisease, String specifyCancer, String specifyHeartDisease, String specifyHIV,
                           String treatment, String enoughDrugsForThreeMonths, String exposedToFacilityWithConfirmedCase,
-                          String someoneHelpingYouManageHIV, String covid19CareFromSomeoneInHousehold, Long userId, String risk) {
+                          String someoneHelpingYouManageHIV, String covid19CareFromSomeoneInHousehold,
+//                          Long userId,
+                          String risk) {
 
         this.fullname = fullname;
         this.date = date;
+        this.age = age;
+        this.gender = gender;
+        this.state = state;
+        this.lga = lga;
         this.phone = phone;
-        this.stateVisited = stateVisited;
         this.feverSymptom = feverSymptom;
         this.coughSymptom = coughSymptom;
         this.difficultyInBreathingSymptom = difficultyInBreathingSymptom;
@@ -226,19 +244,19 @@ public class UserHealthData implements  Serializable {
         this.exposedToFacilityWithConfirmedCase = exposedToFacilityWithConfirmedCase;
         this.someoneHelpingYouManageHIV = someoneHelpingYouManageHIV;
         this.covid19CareFromSomeoneInHousehold = covid19CareFromSomeoneInHousehold;
-        this.userId = userId;
-this.risk = risk;
+//        this.userId = userId;
+        this.risk = risk;
     }
 
 
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
+//
+//    public Long getUserId() {
+//        return userId;
+//    }
+//
+//    public void setUserId(Long userId) {
+//        this.userId = userId;
+//    }
 
     public String getFullname() {
         return fullname;
@@ -262,14 +280,6 @@ this.risk = risk;
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public String getStateVisited() {
-        return stateVisited;
-    }
-
-    public void setStateVisited(String stateVisited) {
-        this.stateVisited = stateVisited;
     }
 
     public String getFeverSymptom() {
@@ -318,6 +328,30 @@ this.risk = risk;
 
     public void setDiarrhoeaSymptoms(String diarrhoeaSymptoms) {
         this.diarrhoeaSymptoms = diarrhoeaSymptoms;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getLga() {
+        return lga;
+    }
+
+    public void setLga(String lga) {
+        this.lga = lga;
     }
 
     public String getFluSymptoms() {

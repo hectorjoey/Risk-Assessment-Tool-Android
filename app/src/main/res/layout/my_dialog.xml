@@ -26,19 +26,21 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Success"
+            android:background="#2FB4FF"
+            android:gravity="center_horizontal"
+            android:text="Privacy Policy"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            android:gravity="center_horizontal" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="I agree that the "
+            android:gravity="center_horizontal"
+            android:text="Welcome to the FHI360 COVID-19 self screening app.\n Any information you provide will be treated with utmost privacy and confidentiality.
+\n I understand that through use of this service, I consent to the collation and use of my information for management, decision-making, and research purposes only. "
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:gravity="center_horizontal" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <Button
             android:id="@+id/buttonOk"

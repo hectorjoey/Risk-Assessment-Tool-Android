@@ -1,9 +1,7 @@
 package mobile.fhi360.covid_19selfscreeningtool.activities;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,11 +12,12 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -26,16 +25,16 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RemoteViews;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationCompat;
 
+import com.ikhiloyaimokhai.nigeriastatesandlgas.Nigeria;
+
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,7 +45,6 @@ import java.util.Locale;
 import mobile.fhi360.covid_19selfscreeningtool.Api.RetrofitClient;
 import mobile.fhi360.covid_19selfscreeningtool.R;
 import mobile.fhi360.covid_19selfscreeningtool.model.UserHealthData;
-import mobile.fhi360.covid_19selfscreeningtool.model.Users;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,8 +54,17 @@ public class UserHealthDataActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     final Calendar myCalendar = Calendar.getInstance();
     EditText mFullname, mDate, mPhone;
-    Spinner mAgeSpinner;
-    Users users;
+    Spinner mAgeSpinner, mStateSpinner, mLgaSpinner, mGenderSpinner;
+    private ProgressDialog loadingBar;
+    private String mState, mLga, mAge;
+    private List<String> states;
+    private Spinner mLanguageSpinner;
+    private static final int SPINNER_HEIGHT = 500;
+//    private String userId;
+
+    private String risk;
+
+    //    Users users;
     //TextView mUserId;
     //declaring the radio group;
     RadioGroup mCough, mFever, mDifficultyInBreathing, mSneezing, mChestPain, mDiarrhoea, mFlu, mSoreThroatSymptoms,
@@ -87,13 +94,7 @@ public class UserHealthDataActivity extends AppCompatActivity {
             updateLabel();
         }
     };
-    private ProgressDialog loadingBar;
-    private Spinner mVisitSpinner, mLanguageSpinner;
-    private String mGender, mVisit, mAge;
-    private List<String> states;
-    private String userId;
 
-    private String risk;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +104,6 @@ public class UserHealthDataActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         setTitle("User Dashboard");
         loadingBar = new ProgressDialog(this);
-
         currentLanguage = getIntent().getStringExtra(currentLang);
         mLanguageSpinner = findViewById(R.id.language_spinner);
         List<String> list = new ArrayList<>();
@@ -111,14 +111,20 @@ public class UserHealthDataActivity extends AppCompatActivity {
         list.add("English");
         list.add("Hausa");
         list.add("Igbo");
-//        Intent intent = getIntent();
+        HashMap<String, String> status = status();
+        String statuss = status.get("status");
+        if (statuss != null) {
 
-        HashMap<String, String> id = getUserId();
-        userId = id.get("userId");
+        } else {
+            showCustomDialog();
+        }
+//        Intent intent = getIntent();
+//
+//        HashMap<String, String> id = getUserId();
+//        userId = id.get("userId");
         mAgeSpinner = findViewById(R.id.age_spinner);
 //
         mDate = findViewById(R.id.edit_date);
-        mVisitSpinner = findViewById(R.id.visit_spinner);
         mFullname = findViewById(R.id.edit_text_fullname);
         mFever = findViewById(R.id.radio_fever);
         mPhone = findViewById(R.id.phone);
@@ -158,61 +164,71 @@ public class UserHealthDataActivity extends AppCompatActivity {
         mContactWithLossOfSmell = findViewById(R.id.radio_contactWithLossOfSmell);
         mContactWithLossOfTaste = findViewById(R.id.radio_contactWithTaste);
         mAgeSpinner = findViewById(R.id.age_spinner);
+        mGenderSpinner = findViewById(R.id.genderSpinner);
+
+
+        mStateSpinner = findViewById(R.id.stateSpinner);
+        mLgaSpinner = findViewById(R.id.lgaSpinner);
+        resizeSpinner(mStateSpinner, SPINNER_HEIGHT);
+        resizeSpinner(mLgaSpinner, SPINNER_HEIGHT);
+
+        states = Nigeria.getStates();
+
+        //call to method that'll set up state and lga spinner
+        setupSpinners();
 
         mBtn_submit = findViewById(R.id.btn_submit);
 //        mUserId = findViewById(R.id.userId);
+
 
         mBtn_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String fullname = mFullname.getText().toString().trim();
                 String date = mDate.getText().toString().trim();
-                final String phone = mPhone.getText().toString().trim();
-                String stateVisited = String.valueOf(mVisitSpinner.getSelectedItem());
-                final String feverSymptom = ((RadioButton) findViewById(mFever.getCheckedRadioButtonId())).getText().toString();
-                final String coughSymptom = ((RadioButton) findViewById(mCough.getCheckedRadioButtonId())).getText().toString();
-                final String difficultyInBreathingSymptom = ((RadioButton) findViewById(mDifficultyInBreathing.getCheckedRadioButtonId())).getText().toString();
-                final String sneezingSymptoms = ((RadioButton) findViewById(mSneezing.getCheckedRadioButtonId())).getText().toString();
-                final String chestPainSymptoms = ((RadioButton) findViewById(mChestPain.getCheckedRadioButtonId())).getText().toString();
-                final String diarrhoeaSymptoms = ((RadioButton) findViewById(mDiarrhoea.getCheckedRadioButtonId())).getText().toString();
-                final String fluSymptoms = ((RadioButton) findViewById(mFlu.getCheckedRadioButtonId())).getText().toString();
-                final String soreThroatSymptoms = ((RadioButton) findViewById(mSoreThroatSymptoms.getCheckedRadioButtonId())).getText().toString();
-                final String contactWithFever = ((RadioButton) findViewById(mContactWithFever.getCheckedRadioButtonId())).getText().toString();
-                final String contactWithCough = ((RadioButton) findViewById(mContactWithCough.getCheckedRadioButtonId())).getText().toString();
-                final String contactWithDifficultBreathing = ((RadioButton) findViewById(mContactWithDifficultBreathing.getCheckedRadioButtonId())).getText().toString();
-                final String contactWithSneeze = ((RadioButton) findViewById(mContactWithSneeze.getCheckedRadioButtonId())).getText().toString();
-                final String contactWithChestpain = ((RadioButton) findViewById(mContactWithChestpain.getCheckedRadioButtonId())).getText().toString();
-                final String contactWithDiarrhoea = ((RadioButton) findViewById(mContactWithDiarrhoea.getCheckedRadioButtonId())).getText().toString();
-                final String contactWithOtherFLu = ((RadioButton) findViewById(mContactWithOtherFlu.getCheckedRadioButtonId())).getText().toString();
-                final String contactWithSoreThroat = ((RadioButton) findViewById(mContactWithSoreThroat.getCheckedRadioButtonId())).getText().toString();
-                final String underlyingConditions = ((RadioButton) findViewById(mUnderlyingConditions.getCheckedRadioButtonId())).getText().toString();
-                final String specifyKidney = ((RadioButton) findViewById(mSpecifyKidney.getCheckedRadioButtonId())).getText().toString();
-                final String specifyPregnancy = ((RadioButton) findViewById(mSpecifyPregnancy.getCheckedRadioButtonId())).getText().toString();
-                final String specifyTB = ((RadioButton) findViewById(mSpecifyTB.getCheckedRadioButtonId())).getText().toString();
-                final String specifyLiver = ((RadioButton) findViewById(mSpecifyLiver.getCheckedRadioButtonId())).getText().toString();
-                final String specifyChronicLungDisease = ((RadioButton) findViewById(mSpecifyChronicLungDisease.getCheckedRadioButtonId())).getText().toString();
-                final String specifyCancer = ((RadioButton) findViewById(mSpecifyCancer.getCheckedRadioButtonId())).getText().toString();
-                final String specifyHeartDisease = ((RadioButton) findViewById(mSpecifyHeartDisease.getCheckedRadioButtonId())).getText().toString();
-                final String contactWithSomeoneWithSymptoms = ((RadioButton) findViewById(mContactWithSomeoneWithSymptoms.getCheckedRadioButtonId())).getText().toString();
-                final String specifyHIV = ((RadioButton) findViewById(mSpecifyHIV.getCheckedRadioButtonId())).getText().toString();
-                final String treatment = ((RadioButton) findViewById(mTreatment.getCheckedRadioButtonId())).getText().toString();
-                final String specifyDiabetes = ((RadioButton) findViewById(mSpecifyDiabetes.getCheckedRadioButtonId())).getText().toString();
-                final String exposedToFacilityWithConfirmedCase = ((RadioButton) findViewById(mExposedToFacilityWithConfirmedCase.getCheckedRadioButtonId())).getText().toString();
-                final String covid19CareFromSomeoneInHousehold = ((RadioButton) findViewById(mCovid19CareFromSomeoneInHousehold.getCheckedRadioButtonId())).getText().toString();
-                final String someoneHelpingYouManageHIV = ((RadioButton) findViewById(mSomeoneHelpingYouManageHIV.getCheckedRadioButtonId())).getText().toString();
-                final String lossOfSmellSymptoms = ((RadioButton) findViewById(mLossOfSmellSymptoms.getCheckedRadioButtonId())).getText().toString();
-                final String lossOfTasteSymptoms = ((RadioButton) findViewById(mLossOfTasteSymptoms.getCheckedRadioButtonId())).getText().toString();
-                final String contactWithLossOfSmell = ((RadioButton) findViewById(mContactWithLossOfSmell.getCheckedRadioButtonId())).getText().toString();
-                final String contactWithLossOfTaste = ((RadioButton) findViewById(mContactWithLossOfTaste.getCheckedRadioButtonId())).getText().toString();
-                final String enoughDrugsForThreeMonths = ((RadioButton) findViewById(mEnoughDrugsForThreeMonths.getCheckedRadioButtonId())).getText().toString();
-                final String age = String.valueOf(mAgeSpinner.getSelectedItem());
+                String age = String.valueOf(mAgeSpinner.getSelectedItem());
+                String state = String.valueOf(mStateSpinner.getSelectedItem());
+                String lga = String.valueOf(mLgaSpinner.getSelectedItem());
+                String gender = String.valueOf(mGenderSpinner.getSelectedItem());
+                String phone = mPhone.getText().toString().trim();
+                String feverSymptom = ((RadioButton) findViewById(mFever.getCheckedRadioButtonId())).getText().toString();
+                String coughSymptom = ((RadioButton) findViewById(mCough.getCheckedRadioButtonId())).getText().toString();
+                String difficultyInBreathingSymptom = ((RadioButton) findViewById(mDifficultyInBreathing.getCheckedRadioButtonId())).getText().toString();
+                String sneezingSymptoms = ((RadioButton) findViewById(mSneezing.getCheckedRadioButtonId())).getText().toString();
+                String chestPainSymptoms = ((RadioButton) findViewById(mChestPain.getCheckedRadioButtonId())).getText().toString();
+                String diarrhoeaSymptoms = ((RadioButton) findViewById(mDiarrhoea.getCheckedRadioButtonId())).getText().toString();
+                String fluSymptoms = ((RadioButton) findViewById(mFlu.getCheckedRadioButtonId())).getText().toString();
+                String soreThroatSymptoms = ((RadioButton) findViewById(mSoreThroatSymptoms.getCheckedRadioButtonId())).getText().toString();
+                String contactWithFever = ((RadioButton) findViewById(mContactWithFever.getCheckedRadioButtonId())).getText().toString();
+                String contactWithCough = ((RadioButton) findViewById(mContactWithCough.getCheckedRadioButtonId())).getText().toString();
+                String contactWithDifficultBreathing = ((RadioButton) findViewById(mContactWithDifficultBreathing.getCheckedRadioButtonId())).getText().toString();
+                String contactWithSneeze = ((RadioButton) findViewById(mContactWithSneeze.getCheckedRadioButtonId())).getText().toString();
+                String contactWithChestpain = ((RadioButton) findViewById(mContactWithChestpain.getCheckedRadioButtonId())).getText().toString();
+                String contactWithDiarrhoea = ((RadioButton) findViewById(mContactWithDiarrhoea.getCheckedRadioButtonId())).getText().toString();
+                String contactWithOtherFLu = ((RadioButton) findViewById(mContactWithOtherFlu.getCheckedRadioButtonId())).getText().toString();
+                String contactWithSoreThroat = ((RadioButton) findViewById(mContactWithSoreThroat.getCheckedRadioButtonId())).getText().toString();
+                String underlyingConditions = ((RadioButton) findViewById(mUnderlyingConditions.getCheckedRadioButtonId())).getText().toString();
+                String specifyKidney = ((RadioButton) findViewById(mSpecifyKidney.getCheckedRadioButtonId())).getText().toString();
+                String specifyPregnancy = ((RadioButton) findViewById(mSpecifyPregnancy.getCheckedRadioButtonId())).getText().toString();
+                String specifyTB = ((RadioButton) findViewById(mSpecifyTB.getCheckedRadioButtonId())).getText().toString();
+                String specifyLiver = ((RadioButton) findViewById(mSpecifyLiver.getCheckedRadioButtonId())).getText().toString();
+                String specifyChronicLungDisease = ((RadioButton) findViewById(mSpecifyChronicLungDisease.getCheckedRadioButtonId())).getText().toString();
+                String specifyCancer = ((RadioButton) findViewById(mSpecifyCancer.getCheckedRadioButtonId())).getText().toString();
+                String specifyHeartDisease = ((RadioButton) findViewById(mSpecifyHeartDisease.getCheckedRadioButtonId())).getText().toString();
+                String contactWithSomeoneWithSymptoms = ((RadioButton) findViewById(mContactWithSomeoneWithSymptoms.getCheckedRadioButtonId())).getText().toString();
+                String specifyHIV = ((RadioButton) findViewById(mSpecifyHIV.getCheckedRadioButtonId())).getText().toString();
+                String treatment = ((RadioButton) findViewById(mTreatment.getCheckedRadioButtonId())).getText().toString();
+                String specifyDiabetes = ((RadioButton) findViewById(mSpecifyDiabetes.getCheckedRadioButtonId())).getText().toString();
+                String exposedToFacilityWithConfirmedCase = ((RadioButton) findViewById(mExposedToFacilityWithConfirmedCase.getCheckedRadioButtonId())).getText().toString();
+                String covid19CareFromSomeoneInHousehold = ((RadioButton) findViewById(mCovid19CareFromSomeoneInHousehold.getCheckedRadioButtonId())).getText().toString();
+                String someoneHelpingYouManageHIV = ((RadioButton) findViewById(mSomeoneHelpingYouManageHIV.getCheckedRadioButtonId())).getText().toString();
+                String lossOfSmellSymptoms = ((RadioButton) findViewById(mLossOfSmellSymptoms.getCheckedRadioButtonId())).getText().toString();
+                String lossOfTasteSymptoms = ((RadioButton) findViewById(mLossOfTasteSymptoms.getCheckedRadioButtonId())).getText().toString();
+                String contactWithLossOfSmell = ((RadioButton) findViewById(mContactWithLossOfSmell.getCheckedRadioButtonId())).getText().toString();
+                String contactWithLossOfTaste = ((RadioButton) findViewById(mContactWithLossOfTaste.getCheckedRadioButtonId())).getText().toString();
+                String enoughDrugsForThreeMonths = ((RadioButton) findViewById(mEnoughDrugsForThreeMonths.getCheckedRadioButtonId())).getText().toString();
 
                 //validations of fields
-
-                if (feverSymptom.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Click", Toast.LENGTH_SHORT).show();
-                }
-
                 if (TextUtils.isEmpty(fullname)) {
                     mFullname.setError("Please enter initials!");
                     mFullname.requestFocus();
@@ -242,13 +258,12 @@ public class UserHealthDataActivity extends AppCompatActivity {
                         || specifyHeartDisease.equals("Yes")
                         || specifyCancer.equals("Yes")
                         || specifyLiver.equals("Yes")
-                        || !(stateVisited.equals("None"))
                         || difficultyInBreathingSymptom.equals("Yes"))))) {
                     risk = "High Risk";
                 } else if ((contactWithSomeoneWithSymptoms.equals("Yes")
+                        || contactWithChestpain.equals("Yes")
                         &&
-                        (contactWithChestpain.equals("Yes")
-                                || diarrhoeaSymptoms.equals("Yes")
+                        (diarrhoeaSymptoms.equals("Yes")
                                 || contactWithCough.equals("Yes")
                                 || contactWithFever.equals("Yes")
                                 || contactWithDifficultBreathing.equals("Yes")
@@ -268,7 +283,7 @@ public class UserHealthDataActivity extends AppCompatActivity {
                     risk = "Low Risk";
                 }
 
-                registerUserHealthData(fullname, date, age, phone, stateVisited, feverSymptom, coughSymptom,
+                registerUserHealthData(fullname, date, age, gender, state, lga, phone, feverSymptom, coughSymptom,
                         difficultyInBreathingSymptom, sneezingSymptoms, chestPainSymptoms,
                         diarrhoeaSymptoms, soreThroatSymptoms, fluSymptoms, lossOfSmellSymptoms, lossOfTasteSymptoms,
                         contactWithSomeoneWithSymptoms, contactWithFever, contactWithCough,
@@ -278,17 +293,12 @@ public class UserHealthDataActivity extends AppCompatActivity {
                         specifyKidney, specifyPregnancy, specifyTB, specifyDiabetes, specifyLiver,
                         specifyChronicLungDisease, specifyCancer, specifyHeartDisease, specifyHIV,
                         treatment, enoughDrugsForThreeMonths, exposedToFacilityWithConfirmedCase,
-                        someoneHelpingYouManageHIV, covid19CareFromSomeoneInHousehold, Long.parseLong(userId), risk
+                        someoneHelpingYouManageHIV, covid19CareFromSomeoneInHousehold,
+//                        Long.parseLong(userId),
+                        risk
                 );
             }
         });
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> visitAdapter = ArrayAdapter.createFromResource(this,
-                R.array.visit_array, android.R.layout.simple_spinner_dropdown_item);
-        // Specify the layout to use when the list of choices appears
-        visitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        mVisitSpinner.setAdapter(visitAdapter);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> ageAdapter = ArrayAdapter.createFromResource(this,
@@ -298,7 +308,6 @@ public class UserHealthDataActivity extends AppCompatActivity {
         // Apply the adapter to the spinner
         mAgeSpinner.setAdapter(ageAdapter);
 
-
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> languageAdapter = ArrayAdapter.createFromResource(this,
                 R.array.language_array, android.R.layout.simple_spinner_dropdown_item);
@@ -306,6 +315,14 @@ public class UserHealthDataActivity extends AppCompatActivity {
         languageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         mLanguageSpinner.setAdapter(languageAdapter);
+
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> genderAdapter = ArrayAdapter.createFromResource(this,
+                R.array.gender_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        mGenderSpinner.setAdapter(genderAdapter);
 
         mLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -345,6 +362,82 @@ public class UserHealthDataActivity extends AppCompatActivity {
         });
     }
 
+    public void setupSpinners() {
+        // Create adapter for spinner. The list options are from the String array it will use
+        // the spinner will use the default layout
+        //populates the quantity spinner ArrayList
+
+        ArrayAdapter<String> statesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, states);
+
+        // Specify dropdown layout style - simple list view with 1 item per line
+        statesAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        // Apply the adapter to the spinner
+        statesAdapter.notifyDataSetChanged();
+        mStateSpinner.setAdapter(statesAdapter);
+
+        // Set the integer mSelected to the constant values
+        mStateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mState = (String) parent.getItemAtPosition(position);
+                setUpStatesSpinner(position);
+            }
+
+            // Because AdapterView is an abstract class, onNothingSelected must be defined
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Unknown
+            }
+        });
+    }
+    /**
+     * method to set up the state spinner
+     *
+     * @param position current position of the spinner
+     */
+    private void setUpStatesSpinner(int position) {
+        List<String> list = new ArrayList<>(Nigeria.getLgasByState(states.get(position)));
+        setUpLgaSpinner(list);
+    }
+    /**
+     * Method to set up the local government areas corresponding to selected states
+     *
+     * @param lgas represents the local government areas of the selected state
+     */
+    private void setUpLgaSpinner(List<String> lgas) {
+        ArrayAdapter lgaAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, lgas);
+        lgaAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        lgaAdapter.notifyDataSetChanged();
+        mLgaSpinner.setAdapter(lgaAdapter);
+
+        mLgaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
+                mLga = (String) parent.getItemAtPosition(position);
+//                    Toast.makeText(UserHealthDataActivity.this, "state: " + mState + " lga: " + mLga, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+    }
+
+    private void resizeSpinner(Spinner spinner, int height) {
+        try {
+            Field popup = Spinner.class.getDeclaredField("mPopup");
+            popup.setAccessible(true);
+
+            //Get private mPopup member variable and try cast to ListPopupWindow
+            android.widget.ListPopupWindow popupWindow = (android.widget.ListPopupWindow) popup.get(spinner);
+
+            //set popupWindow height to height
+            popupWindow.setHeight(height);
+
+        } catch (NoClassDefFoundError | ClassCastException | NoSuchFieldException | IllegalAccessException ex) {
+            ex.printStackTrace();
+        }
+    }
 
     private void updateLabel() {
         String myFormat = "MM/dd/yy";   //In which you need put here
@@ -505,7 +598,7 @@ public class UserHealthDataActivity extends AppCompatActivity {
         }
     }
 
-    public void registerUserHealthData(String fullname, String date, String age, String phone, String stateVisited, String feverSymptom, String coughSymptom,
+    public void registerUserHealthData(String fullname, String date, String age, String gender, String state, String lga, String phone, String feverSymptom, String coughSymptom,
                                        String difficultyInBreathingSymptom, String sneezingSymptoms, String chestPainSymptoms,
                                        String diarrhoeaSymptoms, String fluSymptoms, String soreThroatSymptoms, String lossOfSmellSymptoms,
                                        String lossOfTasteSymptoms,
@@ -516,7 +609,7 @@ public class UserHealthDataActivity extends AppCompatActivity {
                                        String specifyKidney, String specifyPregnancy, String specifyTB, String specifyDiabetes, String specifyLiver,
                                        String specifyChronicLungDisease, String specifyCancer, String specifyHeartDisease, String specifyHIV,
                                        String treatment, String enoughDrugsForThreeMonths, String exposedToFacilityWithConfirmedCase,
-                                       String someoneHelpingYouManageHIV, String covid19CareFromSomeoneInHousehold, Long userId, String risk) {
+                                       String someoneHelpingYouManageHIV, String covid19CareFromSomeoneInHousehold, String risk) {
         //making api calls
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Sending Data...");
@@ -527,7 +620,7 @@ public class UserHealthDataActivity extends AppCompatActivity {
                 .getInstance()
                 .getApi()
                 .createUserHealthData(
-                        fullname, date, age, phone, stateVisited, feverSymptom, coughSymptom,
+                        fullname, date, age, gender, state, lga, phone, feverSymptom, coughSymptom,
                         difficultyInBreathingSymptom, sneezingSymptoms, chestPainSymptoms,
                         diarrhoeaSymptoms, soreThroatSymptoms, fluSymptoms, lossOfSmellSymptoms, lossOfTasteSymptoms,
                         contactWithSomeoneWithSymptoms, contactWithFever, contactWithCough,
@@ -537,7 +630,9 @@ public class UserHealthDataActivity extends AppCompatActivity {
                         specifyKidney, specifyPregnancy, specifyTB, specifyDiabetes, specifyLiver,
                         specifyChronicLungDisease, specifyCancer, specifyHeartDisease, specifyHIV,
                         treatment, enoughDrugsForThreeMonths, exposedToFacilityWithConfirmedCase,
-                        someoneHelpingYouManageHIV, covid19CareFromSomeoneInHousehold, userId, risk);
+                        someoneHelpingYouManageHIV, covid19CareFromSomeoneInHousehold,
+//                        userId,
+                        risk);
         call.enqueue(new Callback<UserHealthData>() {
             @Override
             public void onResponse(Call<UserHealthData> call, Response<UserHealthData> response) {
@@ -562,14 +657,14 @@ public class UserHealthDataActivity extends AppCompatActivity {
                         startActivity(lowRiskIntent);
                         finish();
                     }
-                    //send push notification
-                    NotificationManager notif = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                    Notification notify = new Notification.Builder
-                            (getApplicationContext()).setContentTitle("My Notification").setContentText("You have a notification from "+ fullname).
-                            setContentTitle("Notification").setSmallIcon(R.drawable.icon).build();
-
-                    notify.flags |= Notification.FLAG_AUTO_CANCEL;
-                    notif.notify(0, notify);
+//                    //send push notification
+//                    NotificationManager notif = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//                    Notification notify = new Notification.Builder
+//                            (getApplicationContext()).setContentTitle("My Notification").setContentText("You have a notification from "+ fullname).
+//                            setContentTitle("Notification").setSmallIcon(R.drawable.icon).build();
+//
+//                    notify.flags |= Notification.FLAG_AUTO_CANCEL;
+//                    notif.notify(0, notify);
 
                 } else {
                     loadingBar.dismiss();
@@ -602,40 +697,87 @@ public class UserHealthDataActivity extends AppCompatActivity {
 //                settings();
                 return true;
             case R.id.main_logout:
-                logout();
+//                logout();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void logout() {
-        Intent intent = new Intent(UserHealthDataActivity.this, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
+    private void showCustomDialog() {
+        //before inflating the custom alert dialog layout, we will get the current activity viewGroup
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+
+        //then we will inflate the custom alert dialog xml that we created
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.my_dialog, viewGroup, false);
+        Button ok = dialogView.findViewById(R.id.buttonOk);
+
+        //Now we need an AlertDialog.Builder object
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        //setting the view of the builder to our custom view that we already inflated
+        builder.setView(dialogView);
+
+        //finally creating the alert dialog and displaying it
+        AlertDialog alertDialog = builder.create();
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveStatus();
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
     }
 
+//    private void logout() {
+//        Intent intent = new Intent(UserHealthDataActivity.this, LoginActivity.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        startActivity(intent);
+//        finish();
+//    }
+
+    @Override
     public void onBackPressed() {
-        new AlertDialog.Builder(this)
-                .setTitle("Go back?")
-                .setMessage("Are you sure you want to go back?")
-                .setNegativeButton(android.R.string.no, null)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        Intent intent = new Intent(UserHealthDataActivity.this, LoginActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        finish();
-                    }
-                }).create().show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setMessage("Do you want to Exit?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //if user pressed "yes", then he is allowed to exit from application
+                finish();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //if user select "No", just cancel this dialog and continue with app
+                dialog.cancel();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+//    public HashMap<String, String> getUserId() {
+//        HashMap<String, String> id = new HashMap<>();
+//        SharedPreferences sharedPreferences = this.getSharedPreferences("userId", Context.MODE_PRIVATE);
+//        id.put("userId", sharedPreferences.getString("userId", null));
+//        return id;
+//    }
+
+    public HashMap<String, String> status() {
+        HashMap<String, String> user = new HashMap<>();
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("status", Context.MODE_PRIVATE);
+        user.put("status", sharedPreferences.getString("status", null));
+        return user;
     }
 
-    public HashMap<String, String> getUserId() {
-        HashMap<String, String> id = new HashMap<>();
-        SharedPreferences sharedPreferences = this.getSharedPreferences("userId", Context.MODE_PRIVATE);
-        id.put("userId", sharedPreferences.getString("userId", null));
-        return id;
+    @SuppressLint("ApplySharedPref")
+    public void saveStatus() {
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("status", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("status", "1");
+        editor.commit();
     }
-
 }

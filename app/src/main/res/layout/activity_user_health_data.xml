@@ -46,7 +46,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#4cbbb9"
+            android:background="#2FB4FF"
             android:fontFamily="sans-serif-condensed"
             android:gravity="center"
             android:text="COVID-19"
@@ -58,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:background="#77d8d8"
+            android:background="#7cd0ff"
             android:fontFamily="sans-serif-condensed"
             android:gravity="center_horizontal"
             android:text="@string/risk_assessment_tool"
@@ -69,8 +69,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:fontFamily="sans-serif-condensed-medium"
+            android:gravity="center"
             android:text="@string/section_1_personal_information"
             android:textSize="19sp"
             android:textStyle="bold" />
@@ -91,10 +91,10 @@
                 android:id="@+id/edit_text_fullname"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="@drawable/et_custom"
                 android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
                 android:layout_marginTop="14dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/et_custom"
                 android:hint="@string/full_name"
                 android:inputType="textCapWords"
                 android:padding="4dp"
@@ -108,16 +108,16 @@
             android:id="@+id/date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:errorEnabled="true" >
+            app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_date"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginLeft="20dp"
-                android:background="@drawable/et_custom"
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="8dp"
+                android:background="@drawable/et_custom"
                 android:clickable="true"
                 android:focusable="true"
                 android:hint="Date"
@@ -133,26 +133,132 @@
             android:layout_height="0.5dp"
             android:background="#c0c0c0" />
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:fontFamily="sans-serif-condensed"
-            android:padding="4dp"
-            android:text="@string/age"
-            android:textColor="#f76a8c"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <Spinner
-            android:id="@+id/age_spinner"
-            android:layout_width="200dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/et_custom" />
+            android:background="@drawable/et_custom"
+            android:orientation="horizontal"
+            tools:ignore="DisableBaselineAlignment">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:padding="4dp"
+                    android:text="@string/age"
+                    android:textColor="#f76a8c"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/age_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:padding="4dp"
+                    android:text="@string/gender"
+                    android:textColor="#f76a8c"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/genderSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    app:smsp_hint="Please select a supervisor"
+                    app:smsp_itemListHintBackgroundColor="#808080"
+                    app:smsp_itemListHintColor="#FFFFFF"
+                    app:smsp_multilineError="false"
+                    app:smsp_selectedItemListColor="#FF5252" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/et_custom"
+            android:orientation="horizontal"
+            tools:ignore="DisableBaselineAlignment">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:padding="4dp"
+                    android:text="@string/state"
+                    android:textColor="#f76a8c"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/stateSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:padding="4dp"
+                    android:text="@string/lga"
+                    android:textColor="#f76a8c"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/lgaSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp" />
+            </LinearLayout>
+        </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textPhone"
@@ -183,8 +289,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:fontFamily="sans-serif-condensed-medium"
-            android:padding="4dp"
             android:gravity="center"
+            android:padding="4dp"
             android:text="@string/screening_for_covid_19_infection"
             android:textSize="19sp"
             android:textStyle="bold" />
@@ -195,7 +301,7 @@
             android:fontFamily="sans-serif-condensed"
             android:padding="4dp"
             android:text="@string/right_now_do_you_have_any_these_symptoms"
-            android:textColor="#4cbbb9"
+            android:textColor="#2FB4FF"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -317,7 +423,6 @@
                 android:checked="true"
                 android:onClick="onRadioButtonClicked"
                 android:text="@string/no" />
-
         </RadioGroup>
 
         <TextView
@@ -380,7 +485,6 @@
                 android:checked="true"
                 android:onClick="onRadioButtonClicked"
                 android:text="@string/no" />
-
         </RadioGroup>
 
         <TextView
@@ -411,7 +515,6 @@
                 android:checked="true"
                 android:onClick="onRadioButtonClicked"
                 android:text="@string/no" />
-
         </RadioGroup>
 
         <TextView
@@ -465,7 +568,6 @@
                 android:layout_height="wrap_content"
                 android:onClick="onRadioButtonClicked"
                 android:text="@string/yes" />
-
 
             <RadioButton
                 android:id="@+id/lossOfSmellSymptoms_no"
@@ -530,7 +632,6 @@
                 android:onClick="onRadioButtonClicked"
                 android:text="@string/yes" />
 
-
             <RadioButton
                 android:id="@+id/radio_contactWithSomeoneWithSymptoms_no"
                 android:layout_width="wrap_content"
@@ -547,7 +648,7 @@
             android:fontFamily="sans-serif-condensed"
             android:padding="4dp"
             android:text="@string/have_you_been_in_or_near_any_health_facility_where_covid_19_has_been_reported"
-            android:textColor="#4cbbb9"
+            android:textColor="#2FB4FF"
             android:textSize="20sp" />
 
         <RadioGroup
@@ -573,20 +674,6 @@
 
         </RadioGroup>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-condensed"
-            android:padding="4dp"
-            android:text="@string/which_of_these_countries_with_covid_19_have_you_visited_in_the_last_14_days"
-            android:textColor="#4cbbb9"
-            android:textSize="20sp" />
-
-        <Spinner
-            android:id="@+id/visit_spinner"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
-
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
@@ -607,7 +694,7 @@
             android:layout_height="wrap_content"
             android:padding="4dp"
             android:text="@string/in_the_last_14_days_have_you_been_around_anyone_with_any_of_these_symptoms"
-            android:textColor="#4cbbb9"
+            android:textColor="#2FB4FF"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -729,7 +816,6 @@
                 android:onClick="onRadioButtonClicked"
                 android:text="@string/yes" />
 
-
             <RadioButton
                 android:id="@+id/radio_contactWithSneeze_no"
                 android:layout_width="wrap_content"
@@ -761,7 +847,6 @@
                 android:onClick="onRadioButtonClicked"
                 android:text="@string/yes" />
 
-
             <RadioButton
                 android:id="@+id/radio_contactWithChestpain_no"
                 android:layout_width="wrap_content"
@@ -792,7 +877,6 @@
                 android:layout_height="wrap_content"
                 android:onClick="onRadioButtonClicked"
                 android:text="@string/yes" />
-
 
             <RadioButton
                 android:id="@+id/radio_contactWithDiarrhoea_no"
@@ -857,7 +941,6 @@
                 android:onClick="onRadioButtonClicked"
                 android:text="@string/yes" />
 
-
             <RadioButton
                 android:id="@+id/radio_contactWithSoreThroat_no"
                 android:layout_width="wrap_content"
@@ -888,7 +971,6 @@
                 android:layout_height="wrap_content"
                 android:onClick="onRadioButtonClicked"
                 android:text="@string/yes" />
-
 
             <RadioButton
                 android:id="@+id/radio_contactWithLossOfSmell_no"
@@ -952,7 +1034,7 @@
             android:layout_height="wrap_content"
             android:padding="4dp"
             android:text="@string/do_you_have_any_of_these_medical_conditions_that_might_put_you_at_risk_of_severe_forms_of_covid_19_or_for_which_you_have_to_seek_care_at_health_facilities_regularly"
-            android:textColor="#4cbbb9"
+            android:textColor="#2FB4FF"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -981,7 +1063,6 @@
                 android:checked="true"
                 android:onClick="onRadioButtonClicked"
                 android:text="@string/no" />
-
 
         </RadioGroup>
 
@@ -1014,7 +1095,6 @@
                 android:text="@string/_1_kidney_disease"
                 android:textSize="17sp" />
 
-
             <RadioGroup
                 android:id="@+id/radio_specifyKidney"
                 android:layout_width="wrap_content"
@@ -1027,7 +1107,6 @@
                     android:layout_height="wrap_content"
                     android:onClick="onRadioButtonClicked"
                     android:text="@string/yes" />
-
 
                 <RadioButton
                     android:id="@+id/radio_specifyKidney_no"
@@ -1060,7 +1139,6 @@
                     android:onClick="onRadioButtonClicked"
                     android:text="@string/yes" />
 
-
                 <RadioButton
                     android:id="@+id/radio_specifyPregnancy_no"
                     android:layout_width="wrap_content"
@@ -1092,7 +1170,6 @@
                     android:onClick="onRadioButtonClicked"
                     android:text="@string/yes" />
 
-
                 <RadioButton
                     android:id="@+id/radio_specifyTB_no"
                     android:layout_width="wrap_content"
@@ -1100,7 +1177,6 @@
                     android:checked="true"
                     android:onClick="onRadioButtonClicked"
                     android:text="@string/no" />
-
             </RadioGroup>
 
             <TextView
@@ -1123,7 +1199,6 @@
                     android:layout_height="wrap_content"
                     android:onClick="onRadioButtonClicked"
                     android:text="@string/yes" />
-
 
                 <RadioButton
                     android:id="@+id/radio_specifyDiabetes_no"
@@ -1156,7 +1231,6 @@
                     android:onClick="onRadioButtonClicked"
                     android:text="@string/yes" />
 
-
                 <RadioButton
                     android:id="@+id/radio_specifyLiverDisease_no"
                     android:layout_width="wrap_content"
@@ -1187,7 +1261,6 @@
                     android:layout_height="wrap_content"
                     android:onClick="onRadioButtonClicked"
                     android:text="@string/yes" />
-
 
                 <RadioButton
                     android:id="@+id/radio_chronicLungDisease_no"
@@ -1220,7 +1293,6 @@
                     android:onClick="onRadioButtonClicked"
                     android:text="@string/yes" />
 
-
                 <RadioButton
                     android:id="@+id/radio_specifyCancer_no"
                     android:layout_width="wrap_content"
@@ -1252,7 +1324,6 @@
                     android:onClick="onRadioButtonClicked"
                     android:text="@string/yes" />
 
-
                 <RadioButton
                     android:id="@+id/radio_heartDisease_no"
                     android:layout_width="wrap_content"
@@ -1262,7 +1333,6 @@
                     android:text="@string/no" />
 
             </RadioGroup>
-
 
             <TextView
                 android:layout_width="wrap_content"
@@ -1416,7 +1486,7 @@
                 android:layout_marginBottom="4dp"
                 android:padding="4dp"
                 android:text="@string/in_case_you_start_having_severe_covid_19_symptoms_is_there_someone_in_your_household_who_could_help_you_get_care"
-                android:textColor="#4cbbb9"
+                android:textColor="#2FB4FF"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
@@ -1440,7 +1510,6 @@
                     android:layout_height="wrap_content"
                     android:onClick="onRadioButtonClicked"
                     android:text="@string/no" />
-
             </RadioGroup>
         </LinearLayout>
 

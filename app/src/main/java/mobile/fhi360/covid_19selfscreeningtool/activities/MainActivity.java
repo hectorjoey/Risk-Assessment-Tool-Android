@@ -24,62 +24,62 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
 //        setTitle("Admin Dashboard");
 
-        mImageSup = findViewById(R.id.imgAddSup);
-        mImgAddUser = findViewById(R.id.imgAddUser);
-        mImageViewSup = findViewById(R.id.imgViewSup);
-        mImageViewUser = findViewById(R.id.imgViewUser);
-
-        mImageSup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               Intent addSupIntent = new Intent(MainActivity.this, RegisterUserActivity.class);
-               startActivity(addSupIntent);
-               finish();
-            }
-        });
-
-        mImgAddUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent addUserIntent = new Intent(MainActivity.this, RegisterActivity.class);
-                startActivity(addUserIntent);
-                finish();
-            }
-        });
-
-        mImageViewSup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent viewSUpIntent = new Intent(MainActivity.this, SupervisorListActivity.class);
-                startActivity(viewSUpIntent);
-                finish();
-            }
-        });
-
-        mImageViewUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent viewUserIntent = new Intent(MainActivity.this, DashboardActivity.class);
-                startActivity(viewUserIntent);
-                finish();
-
-            }
-        });
-
-    }
-
-    public void onBackPressed() {
-        new AlertDialog.Builder(this)
-                .setTitle("Want to go back?")
-                .setMessage("Are you sure you want to go back?")
-                .setNegativeButton(android.R.string.no, null)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        finish();
-                    }
-                }).create().show();
+//        mImageSup = findViewById(R.id.imgAddSup);
+//        mImgAddUser = findViewById(R.id.imgAddUser);
+//        mImageViewSup = findViewById(R.id.imgViewSup);
+//        mImageViewUser = findViewById(R.id.imgViewUser);
+//
+//        mImageSup.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//               Intent addSupIntent = new Intent(MainActivity.this, RegisterSupervisorActivity.class);
+//               startActivity(addSupIntent);
+//               finish();
+//            }
+//        });
+//
+//        mImgAddUser.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent addUserIntent = new Intent(MainActivity.this, RegisterActivity.class);
+//                startActivity(addUserIntent);
+//                finish();
+//            }
+//        });
+//
+//        mImageViewSup.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent viewSUpIntent = new Intent(MainActivity.this, SupervisorListActivity.class);
+//                startActivity(viewSUpIntent);
+//                finish();
+//            }
+//        });
+//
+//        mImageViewUser.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent viewUserIntent = new Intent(MainActivity.this, DashboardActivity.class);
+//                startActivity(viewUserIntent);
+//                finish();
+//
+//            }
+//        });
+//
+//    }
+//
+//    public void onBackPressed() {
+//        new AlertDialog.Builder(this)
+//                .setTitle("Want to go back?")
+//                .setMessage("Are you sure you want to go back?")
+//                .setNegativeButton(android.R.string.no, null)
+//                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface arg0, int arg1) {
+//                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+//                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                        startActivity(intent);
+//                        finish();
+//                    }
+//                }).create().show();
     }
 }
